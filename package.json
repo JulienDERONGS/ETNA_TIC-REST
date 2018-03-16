@@ -1,0 +1,29 @@
+{
+  "name": "tic-rest",
+  "version": "1.0.0",
+  "description": "ETNA_API",
+  "main": "server.js",
+  "scripts": {
+    "preinstall": "sudo npm i forever -g",
+    "start": "sudo forever start server.js",
+    "daemon": "sudo forever -w server.js",
+    "stop": "sudo forever stop server.js",
+    "monitor": "sudo watch -c -n 1 forever logs server.js",
+    "restart": "sudo forever stop server.js && sudo forever start server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/JulienDERONGS/ETNA_TIC-REST.git"
+  },
+  "author": "derong_j",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JulienDERONGS/ETNA_TIC-REST/issues"
+  },
+  "homepage": "https://github.com/JulienDERONGS/ETNA_TIC-REST#readme",
+  "dependencies": {
+    "hapi": "^17.2.2",
+    "mysql": "^2.15.0"
+  }
+}
