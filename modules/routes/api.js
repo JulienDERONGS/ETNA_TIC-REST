@@ -1,3 +1,4 @@
+const db = require('../Database/Database');
 const api = []
 
 const api_domains = {
@@ -6,7 +7,8 @@ const api_domains = {
     handler: (request, h) => {
         if (request.params.ext == "json")
         {
-            return ("SQL Request here.");
+            const dbInstance = new db();
+            return dbInstance.query("SELECT id, slug, name, description FROM `domain`;")
         }
         else
         {

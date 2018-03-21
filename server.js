@@ -1,7 +1,7 @@
 'use strict';
 
 const Hapi = require('hapi');
-const DB = require('./modules/db/db.js');
+const DB = require('./modules/Database/Database.js');
 const routes = require("./modules/routes/routes.js")
 
 // Server creation
