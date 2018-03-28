@@ -1,5 +1,6 @@
 const index_route = require("./api.js");
 const api_route = require("./index.js");
+const errors_route = require("./errors.js");
 
 const getRoutes = function () {
     let res = [];
@@ -11,5 +12,5 @@ const getRoutes = function () {
     return res;
 }
 
-const all_routes = getRoutes(index_route, api_route);
+const all_routes = getRoutes(index_route, api_route, errors_route);
 module.exports = all_routes;

@@ -6,8 +6,12 @@ const routes = require("./modules/routes/routes.js")
 
 // Server creation
 const server = Hapi.server({
-    host: 'localhost',
-    port: 80
+    port: 80,
+    routes: {
+        json: {
+            space: 4
+        }
+    }
 });
 
 // Monitor logs into console
