@@ -10,7 +10,7 @@ const api_domains = {
         if (request.params.ext == "json")
         {
             const db = new database();
-            return (db.query("SELECT id, slug, name, description FROM `domain`;"));
+            return (db.queries("SELECT id, slug, name, description FROM `domain`;"));
         }
         else
         {
