@@ -74,18 +74,21 @@ class Database
     const self = this;
     return new Promise((resolve, reject) => {
       self.getInstance().query(q, function(err, h) {
-        console.log(err ? "Query error : " + err : "Query done ! ");
         if (err)
         {
           reject({
             code: 400,
             message: "error",
-            datas: []});
+            datas: []
+          });
         }
         else
         {
+          console.log(err ? "Query error : " + err : "Query done ! ");          
           resolve({
-            h
+            code: 200,
+            message: "success",
+            datas: h
           });
         }
       })
