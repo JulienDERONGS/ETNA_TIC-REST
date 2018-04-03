@@ -1,11 +1,11 @@
 const mysql = require('mysql');
-var flag = true;
 
 class Database
 {
   constructor() {}
   
-  getInstance() {
+  getInstance()
+  {
     if (pool)
     {
       return (pool);
@@ -20,7 +20,7 @@ class Database
     });
     console.log("Connected to the database !");
     return (pool);
-  };
+  }
 
   /* query(db_query, first = true)
   {
@@ -69,13 +69,14 @@ class Database
     return Promise.all(result);
   }*/
 
-  queries(q)
+  doQuery(q)
   {
     const self = this;
     return new Promise((resolve, reject) => {
       self.getInstance().query(q, function(err, h) {
         if (err)
         {
+          console.log("Query error : " + err);          
           reject({
             code: 400,
             message: "error",
@@ -94,5 +95,31 @@ class Database
       })
     });
   }
+
+  simpleQuery(q)
+  {
+    const self = this;
+    return new Promise((resolve, reject) => {
+      self.getInstance().query(q, function(err, h) {
+        if (err)
+        {
+          console.log("Query error : " + err);          
+          reject({
+            code: 400,
+            message: "error",
+            datas: []
+          });
+        }
+        else
+        {
+          console.log(err ? "Query error : " + err : "Query done ! ");          
+          resolve({
+            datas: h
+          });
+        }
+      })
+    });
+  }
 }
+
 module.exports = Database;

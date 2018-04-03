@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/JulienDERONGS/ETNA_TIC-REST#readme",
   "dependencies": {
-    "hapi": "^17.2.2",
+    "hapi": "^17.3.0",
     "lodash": "^4.17.5",
     "mysql": "^2.15.0"
   }

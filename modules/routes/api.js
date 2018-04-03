@@ -1,16 +1,18 @@
-const database = require('../Database/Database');
+const database = require('../Database/Database.js');
+const helper = require('../Helper/Helper.js');
 const _ = require('lodash');
 const api = [];
 
 const api_domains = {
     method: 'GET',
-    path: '/api/domains.{ext}',
+    path: '/api/domains.{ext?}',
     handler: (request, h) => {
+        console.log("\nRoute : /api/domains.{ext?}");
         console.log(request.params);
-        if (request.params.ext == "json")
+        if (!request.params.ext || request.params.ext == "json")
         {
             const db = new database();
-            return (db.queries("SELECT id, slug, name, description FROM `domain`;"));
+            return (db.doQuery("SELECT id, slug, name, description FROM `domain`;"));
         }
         else
         {
@@ -27,27 +29,59 @@ const api_domains = {
 
 const api_domains_sel = {
     method: 'GET',
-    path: '/api/domains/{domain}.{ext}',
+    path: '/api/domains/{domain}.{ext?}',
     handler: (request, h) => {
+        console.log("\nRoute : /api/domains/{domain}.{ext?}");
         console.log(request.params);
-        if (request.params.ext == "json" && request.params.domain != "domains")
+        if ((!request.params.ext || request.params.ext == "json") && request.params.domain != "domains")
         {
             const db2 = new database();
-            let q1 = "SELECT lang_id AS langs FROM domain_lang;";
-            let q2 = "SELECT id, slug, name, description FROM domain WHERE name = '"+ request.params.domain+"';";
-            let q3 = "SELECT u.id, u.username FROM `user` AS u, `domain` AS d WHERE d.name = '"+ request.params.domain +"';";
-            let q4 = "SELECT created_at FROM `domain` WHERE name = '"+ request.params.domain +"'";
-            q = "SELECT lang_id AS langs FROM domain_lang GROUP BY langs";
+            const help = new helper();
 
-            let result = db2.queries(q);
-            result.then(function (res) {
-                res = _.groupBy(res, res.datas.langs);
-                console.log(res);
-            }).catch(function (r) {
-                console.log(r);
-            });
-            return (result);
-            return (db2.queries(q1, q2, q3, q4));
+            let q1 = "SELECT dl.lang_id AS langs "
+            +   "FROM `domain_lang` dl, `domain` d "
+            +   "WHERE d.name LIKE '"+ request.params.domain +"'";
+
+            let q2 = "SELECT DISTINCT d.id, d.slug, d.name, d.description, u.id AS `uid`, u.username, d.created_at "
+            +   "FROM `domain` d, `user` u, `domain_lang` dl "
+            +   "WHERE u.id LIKE d.user_id AND d.id LIKE dl.domain_id AND d.name LIKE '"+ request.params.domain +"'";
+
+            let query_langs = db2.simpleQuery(q1);
+            let query_user = db2.simpleQuery(q2);
+
+            // Part 1 : Langs
+            query_langs
+                .then(function (data)
+                {
+                    const langs = help.formatLangs(data);
+                    this.query_langs = langs;
+                    return (langs);
+                })
+                .catch(function (err)
+                {
+                    console.log(err);
+                    return (err);
+                });
+
+            // Part 2 : User
+            query_user
+                .then(function (data)
+                {
+                    const user = help.formatUser(data);
+                    console.log("\nDEBUG:");
+                    console.log(JSON.stringify(user, null, 4));
+                    console.log("\n");
+                    return (user);
+                })
+                .catch(function (err)
+                {
+                    console.log(err);
+                    return (err);
+                });
+
+            // Part 3 : Merge & return
+            _.merge(query_langs, query_user);
+            return (query_langs);
         }
         else
         {

@@ -3,8 +3,9 @@ const errors = [];
 
 const error404 = {
     method: '*',
-    path: '/{p*}',
+    path: '/{param*}',
     handler: (request, h) => {
+        console.log("\nRoute : Error 404");
         console.log(request.params);
         var data =
         {
